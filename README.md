@@ -4,9 +4,9 @@ Common CLI to help you cleanup files using filtering in Minio bucket
 
 ## Development
 ```bash
-kubectl --context aks-single-eti-devcluster port-forward svc/minio -n anton-test 8888:80
-kubectl --context aks-single-eti-devcluster get secret -n minio-operator console-sa-secret -o json | jq '.data.token' -r | base64 -d
-kubectl --context aks-single-eti-devcluster port-forward svc/console -n minio-operator 9090:9090
+kubectl port-forward svc/minio -n anton-test 8888:80
+kubectl get secret -n minio-operator console-sa-secret -o json | jq '.data.token' -r | base64 -d
+kubectl port-forward svc/console -n minio-operator 9090:9090
 ```
 
 ```bash
