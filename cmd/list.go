@@ -26,7 +26,7 @@ For example:
 func init() {
 	rootCmd.AddCommand(listFilesCmd)
 	listFilesCmd.Flags().StringP("older-than", "o", "", "Filter files older than duration (e.g., '5d', '1h', '30m', '45s', '2d3h4m')")
-	listFilesCmd.Flags().StringP("prefix", "p", "", "Filter files with specific prefix (e.g., 'inbox/')")
+	listFilesCmd.Flags().StringP("prefix", "p", "", "Filter files with specific prefix (e.g., 'inbox')")
 	listFilesCmd.Flags().StringP("suffix", "s", "", "Filter files with specific suffix (e.g., '.json')")
 	listFilesCmd.Flags().StringP("bucket", "b", "", "Bucket name")
 }

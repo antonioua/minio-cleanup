@@ -25,7 +25,7 @@ For example:
 
 func init() {
 	rootCmd.AddCommand(generateCmd)
-	generateCmd.Flags().StringP("prefix", "p", "", "Filter files with specific prefix (e.g., 'inbox/')")
+	generateCmd.Flags().StringP("prefix", "p", "", "Filter files with specific prefix (e.g., 'inbox')")
 	generateCmd.Flags().StringP("bucket", "b", "", "Bucket name")
 	generateCmd.Flags().IntP("files", "n", 0, "Number of files to generate")
 	generateCmd.Flags().IntP("threads", "t", 1, "Number of threads")
@@ -65,7 +65,6 @@ func generateFiles(cmd *cobra.Command, args []string) {
 		go func(objectName string) {
 			defer wg.Done()
 			content := []byte("Hello world!")
-			fmt.Println("Processing: ", objectName)
 			_, err = minioClient.PutObject(ctx, bucketName, objectName, bytes.NewReader(content), int64(len(content)), minio.PutObjectOptions{ContentType: "application/json"})
 			if err != nil {
 				log.Fatal(err)

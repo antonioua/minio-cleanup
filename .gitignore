@@ -23,4 +23,4 @@ go.work.sum
 
 .idea
 
-minioCleanupBuckets
+minio_cleanup

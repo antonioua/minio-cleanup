@@ -33,7 +33,7 @@ For example:
 func init() {
 	rootCmd.AddCommand(cleanFilesCmd)
 	cleanFilesCmd.Flags().StringP("older-than", "o", "", "Filter files older than duration (e.g., '5d', '1h', '30m', '45s', '2d3h4m')")
-	cleanFilesCmd.Flags().StringP("prefix", "p", "", "Filter files with specific prefix (e.g., 'inbox/')")
+	cleanFilesCmd.Flags().StringP("prefix", "p", "", "Filter files with specific prefix (e.g., 'inbox')")
 	cleanFilesCmd.Flags().StringP("suffix", "s", "", "Filter files with specific suffix (e.g., '.json')")
 	cleanFilesCmd.Flags().StringP("bucket", "b", "", "Bucket name")
 	//cleanFilesCmd.Flags().IntP("threads", "t", 1, "Number of threads")
