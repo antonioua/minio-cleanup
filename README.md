@@ -16,9 +16,9 @@ go build -o minio_cleanup
 
 ## Usage
 ```bash
-./minio_cleanup generate -b smp-to-oss-sandbox -p "inbox" -n 10000 -t 1
-./minio_cleanup list -b smp-to-oss-sandbox -o 1s -p "inbox" -s ".json"
-./minio_cleanup clean  -b smp-to-oss-sandbox -o 1s -p "inbox" -s ".json"
+./minio_cleanup generate --bucket "smp-to-oss-sandbox" --prefix "inbox" --files-number 1000 --workers 20
+./minio_cleanup list -b smp-to-oss-sandbox --older-than 10s -p "inbox" -s ".json" //TODO
+./minio_cleanup clean  -b smp-to-oss-sandbox -o 1s -p "inbox" -s ".json" //TODO
 ```
 
 ## TODO

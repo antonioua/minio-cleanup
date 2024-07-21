@@ -25,17 +25,37 @@ For example:
 
 func init() {
 	rootCmd.AddCommand(generateCmd)
-	generateCmd.Flags().StringP("prefix", "p", "", "Filter files with specific prefix (e.g., 'inbox')")
 	generateCmd.Flags().StringP("bucket", "b", "", "Bucket name")
-	generateCmd.Flags().IntP("files", "n", 0, "Number of files to generate")
-	generateCmd.Flags().IntP("workers", "t", 1, "Number of workers, a.k.a. number of concurrent requests")
+	generateCmd.Flags().StringP("prefix", "p", "", "Filter files with specific prefix (e.g., 'inbox')")
+	generateCmd.Flags().IntP("files-number", "n", 0, "Number of files to generate")
+	generateCmd.Flags().IntP("workers", "w", 1, "Number of workers, a.k.a. number of concurrent requests")
+}
+
+type Job struct {
+	BucketName string
+	ObjectName string
+}
+
+func worker(id int, minioClient *minio.Client, ctx context.Context, jobs <-chan Job, results chan<- string, wg *sync.WaitGroup) {
+	content := []byte("Hello world!")
+
+	for job := range jobs {
+		fmt.Println("worker: ", id, " has started the job:  ", job)
+		_, err := minioClient.PutObject(ctx, job.BucketName, job.ObjectName, bytes.NewReader(content), int64(len(content)), minio.PutObjectOptions{ContentType: "application/json"})
+		if err != nil {
+			results <- err.Error()
+			log.Fatal(err)
+		}
+		results <- job.ObjectName
+		wg.Done()
+	}
 }
 
 func generateFiles(cmd *cobra.Command, args []string) {
-	prefix, _ := cmd.Flags().GetString("prefix")
 	bucketName, _ := cmd.Flags().GetString("bucket")
-	numFiles, _ := cmd.Flags().GetInt("files")
-	workers, _ := cmd.Flags().GetInt("threads")
+	prefix, _ := cmd.Flags().GetString("prefix")
+	numFiles, _ := cmd.Flags().GetInt("files-number")
+	numWorkers, _ := cmd.Flags().GetInt("workers")
 
 	fmt.Println("Running generateFiles...")
 
@@ -55,25 +75,27 @@ func generateFiles(cmd *cobra.Command, args []string) {
 		objectNames = append(objectNames, fmt.Sprintf("%s/notify_%s.json", prefix, uuid.New().String()))
 	}
 
+	jobs := make(chan Job, len(objectNames))
+	results := make(chan string, len(objectNames))
 	wg := sync.WaitGroup{}
-	wg.Add(numFiles)
 
-	fmt.Println(objectNames)
-
-	for _, objectName := range objectNames {
-
-		go func(objectName string) {
-			defer wg.Done()
-			content := []byte("Hello world!")
-			_, err = minioClient.PutObject(ctx, bucketName, objectName, bytes.NewReader(content), int64(len(content)), minio.PutObjectOptions{ContentType: "application/json"})
-			if err != nil {
-				log.Fatal(err)
-			}
-			fmt.Println("Successfully uploaded: ", objectName)
-		}(objectName)
-
+	// Start workers
+	for w := 0; w < numWorkers; w++ {
+		go worker(w, minioClient, ctx, jobs, results, &wg)
 	}
 
+	// Sending jobs to worker pool
+	for _, objectName := range objectNames {
+		jobs <- Job{ObjectName: objectName, BucketName: bucketName}
+		wg.Add(1)
+	}
+	close(jobs)
 	wg.Wait()
+
+	// Collecting results
+	for i := 0; i < len(objectNames); i++ {
+		fmt.Println("Successfully uploaded: ", <-results)
+	}
+
 	fmt.Println("\nDone.")
 }
