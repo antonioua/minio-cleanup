@@ -28,14 +28,14 @@ func init() {
 	generateCmd.Flags().StringP("prefix", "p", "", "Filter files with specific prefix (e.g., 'inbox')")
 	generateCmd.Flags().StringP("bucket", "b", "", "Bucket name")
 	generateCmd.Flags().IntP("files", "n", 0, "Number of files to generate")
-	generateCmd.Flags().IntP("threads", "t", 1, "Number of threads")
+	generateCmd.Flags().IntP("workers", "t", 1, "Number of workers, a.k.a. number of concurrent requests")
 }
 
 func generateFiles(cmd *cobra.Command, args []string) {
 	prefix, _ := cmd.Flags().GetString("prefix")
 	bucketName, _ := cmd.Flags().GetString("bucket")
 	numFiles, _ := cmd.Flags().GetInt("files")
-	//numThreads, _ := cmd.Flags().GetInt("threads")
+	workers, _ := cmd.Flags().GetInt("threads")
 
 	fmt.Println("Running generateFiles...")
 

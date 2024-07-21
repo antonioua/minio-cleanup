@@ -1,4 +1,4 @@
-module github.com/antonioua/minioCleanupBuckets
+module github.com/antonioua/minio-cleanup
 
 go 1.22.5
 

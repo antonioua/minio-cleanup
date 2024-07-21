@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/antonioua/minioCleanupBuckets/internal/server"
+	"github.com/antonioua/minio-cleanup/internal/server"
 )
 
 func main() {
