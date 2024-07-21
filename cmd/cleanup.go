@@ -79,8 +79,7 @@ func cleanupFiles(cmd *cobra.Command, args []string) {
 				log.Fatalln(object.Err)
 			}
 			if object.LastModified.Before(olderThanTime) && strings.HasSuffix(object.Key, suffix) {
-				//fmt.Println(object.Key)
-				//fmt.Println(object.LastModified)
+				fmt.Println("Removing: ", object.Key)
 				objectsCh <- object
 				numOfObjects++
 			}
@@ -91,8 +90,8 @@ func cleanupFiles(cmd *cobra.Command, args []string) {
 		fmt.Println("Error detected during deletion: ", rErr)
 	}
 
-	fmt.Println("\n Total number of found objects: ", numOfObjects)
-	fmt.Println("Done")
+	fmt.Println("\nDone.")
+	fmt.Println("Total number of removed objects: ", numOfObjects)
 
 	//minioClient.RemoveObjects
 }

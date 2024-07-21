@@ -79,6 +79,6 @@ func listFiles(cmd *cobra.Command, args []string) {
 		}
 	}
 
-	fmt.Println("\nTotal number of found objects: ", numOfObjects)
-	fmt.Println("Done")
+	fmt.Println("\nDone.")
+	fmt.Println("Total number of found objects: ", numOfObjects)
 }

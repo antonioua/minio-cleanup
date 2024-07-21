@@ -25,20 +25,19 @@ For example:
 
 func init() {
 	rootCmd.AddCommand(generateCmd)
+	generateCmd.Flags().StringP("prefix", "p", "", "Filter files with specific prefix (e.g., 'inbox/')")
 	generateCmd.Flags().StringP("bucket", "b", "", "Bucket name")
 	generateCmd.Flags().IntP("files", "n", 0, "Number of files to generate")
 	generateCmd.Flags().IntP("threads", "t", 1, "Number of threads")
 }
 
 func generateFiles(cmd *cobra.Command, args []string) {
+	prefix, _ := cmd.Flags().GetString("prefix")
 	bucketName, _ := cmd.Flags().GetString("bucket")
 	numFiles, _ := cmd.Flags().GetInt("files")
-	numThreads, _ := cmd.Flags().GetInt("threads")
+	//numThreads, _ := cmd.Flags().GetInt("threads")
 
-	fmt.Println("Running generateFiles for: ", bucketName, numFiles, numThreads)
-
-	//ctx, cancel := context.WithCancel(context.Background())
-	//defer cancel()
+	fmt.Println("Running generateFiles...")
 
 	minioClient, err := minio.New("localhost:8888", &minio.Options{
 		Creds:  credentials.NewStaticV4("minioconsole", "minioconsole123", ""),
@@ -51,23 +50,31 @@ func generateFiles(cmd *cobra.Command, args []string) {
 
 	ctx := context.Background()
 
-	objectNames := make([]string, numFiles)
+	objectNames := make([]string, 0, numFiles)
 	for i := 0; i < numFiles; i++ {
-		objectNames = append(objectNames, fmt.Sprintf("inbox/notify_%s.json", uuid.New().String()))
+		objectNames = append(objectNames, fmt.Sprintf("%s/notify_%s.json", prefix, uuid.New().String()))
 	}
 
 	wg := sync.WaitGroup{}
 	wg.Add(numFiles)
+
+	fmt.Println(objectNames)
+
 	for _, objectName := range objectNames {
+
 		go func(objectName string) {
-			content := []byte(objectName)
+			defer wg.Done()
+			content := []byte("Hello world!")
+			fmt.Println("Processing: ", objectName)
 			_, err = minioClient.PutObject(ctx, bucketName, objectName, bytes.NewReader(content), int64(len(content)), minio.PutObjectOptions{ContentType: "application/json"})
 			if err != nil {
 				log.Fatal(err)
 			}
 			fmt.Println("Successfully uploaded: ", objectName)
 		}(objectName)
+
 	}
 
 	wg.Wait()
+	fmt.Println("\nDone.")
 }
