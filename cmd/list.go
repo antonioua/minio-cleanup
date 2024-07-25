@@ -18,7 +18,7 @@ var listFilesCmd = &cobra.Command{
 	Long: `A longer description that spans multiple lines and likely contains
 For example:
 
-./miniolistBuckets list -b smp-to-oss-sandbox -n 100 -t 1`,
+./minio_cleanup list --bucket smp-to-oss-sandbox --older-than 10s --prefix inbox --suffix .json --host localhost:8888 --access-key <access_key> --secret-key <secret_key>`,
 
 	Run: listFiles,
 }
@@ -29,6 +29,9 @@ func init() {
 	listFilesCmd.Flags().StringP("prefix", "p", "", "Filter files with specific prefix (e.g., 'inbox')")
 	listFilesCmd.Flags().StringP("suffix", "s", "", "Filter files with specific suffix (e.g., '.json')")
 	listFilesCmd.Flags().StringP("bucket", "b", "", "Bucket name")
+	listFilesCmd.Flags().StringP("host", "", "localhost:8888", "Minio host:port")
+	listFilesCmd.Flags().StringP("access-key", "", "", "Minio access key")
+	listFilesCmd.Flags().StringP("secret-key", "", "", "Minio secret key")
 }
 
 func listFiles(cmd *cobra.Command, args []string) {
@@ -36,7 +39,9 @@ func listFiles(cmd *cobra.Command, args []string) {
 	prefix, _ := cmd.Flags().GetString("prefix")
 	suffix, _ := cmd.Flags().GetString("suffix")
 	bucketName, _ := cmd.Flags().GetString("bucket")
-	//numThreads, _ := cmd.Flags().GetInt("threads")
+	host, _ := cmd.Flags().GetString("host")
+	accessKey, _ := cmd.Flags().GetString("access-key")
+	secretKey, _ := cmd.Flags().GetString("secret-key")
 
 	olderThanDuration, err := longduration.ParseDuration(olderThanStr)
 	if err != nil {
@@ -45,8 +50,8 @@ func listFiles(cmd *cobra.Command, args []string) {
 
 	fmt.Println("Running listFiles...")
 
-	minioClient, err := minio.New("localhost:8888", &minio.Options{
-		Creds:  credentials.NewStaticV4("minioconsole", "minioconsole123", ""),
+	minioClient, err := minio.New(host, &minio.Options{
+		Creds:  credentials.NewStaticV4(accessKey, secretKey, ""),
 		Secure: false,
 	})
 
@@ -62,7 +67,6 @@ func listFiles(cmd *cobra.Command, args []string) {
 	})
 
 	numOfObjects := 0
-
 	currentTIme := time.Now()
 	olderThanTime := currentTIme.Add(-olderThanDuration)
 
@@ -73,8 +77,8 @@ func listFiles(cmd *cobra.Command, args []string) {
 		}
 
 		if object.LastModified.Before(olderThanTime) && strings.HasSuffix(object.Key, suffix) {
-			fmt.Println(object.Key)
-			fmt.Println(object.LastModified)
+			//fmt.Println(object.Key)
+			//fmt.Println(object.LastModified)
 			numOfObjects++
 		}
 	}

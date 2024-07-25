@@ -18,7 +18,7 @@ var generateCmd = &cobra.Command{
 	Long: `A longer description that spans multiple lines and likely contains
 For example:
 
-./minioCleanupBuckets generate -b smp-to-oss-sandbox -n 100 -t 1`,
+./minio_cleanup generate --bucket smp-to-oss-sandbox --prefix inbox --files-number 1000 --workers 20 --host localhost:8888 --access-key <access_key> --secret-key <secret_key>`,
 
 	Run: generateFiles,
 }
@@ -29,6 +29,9 @@ func init() {
 	generateCmd.Flags().StringP("prefix", "p", "", "Filter files with specific prefix (e.g., 'inbox')")
 	generateCmd.Flags().IntP("files-number", "n", 0, "Number of files to generate")
 	generateCmd.Flags().IntP("workers", "w", 1, "Number of workers, a.k.a. number of concurrent requests")
+	generateCmd.Flags().StringP("host", "", "localhost:8888", "Minio host:port")
+	generateCmd.Flags().StringP("access-key", "", "", "Minio access key")
+	generateCmd.Flags().StringP("secret-key", "", "", "Minio secret key")
 }
 
 type Job struct {
@@ -40,7 +43,7 @@ func worker(id int, minioClient *minio.Client, ctx context.Context, jobs <-chan 
 	content := []byte("Hello world!")
 
 	for job := range jobs {
-		fmt.Println("worker: ", id, " has started the job:  ", job)
+		//fmt.Println("worker: ", id, " has started the job:  ", job)
 		_, err := minioClient.PutObject(ctx, job.BucketName, job.ObjectName, bytes.NewReader(content), int64(len(content)), minio.PutObjectOptions{ContentType: "application/json"})
 		if err != nil {
 			results <- err.Error()
@@ -56,11 +59,14 @@ func generateFiles(cmd *cobra.Command, args []string) {
 	prefix, _ := cmd.Flags().GetString("prefix")
 	numFiles, _ := cmd.Flags().GetInt("files-number")
 	numWorkers, _ := cmd.Flags().GetInt("workers")
+	host, _ := cmd.Flags().GetString("host")
+	accessKey, _ := cmd.Flags().GetString("access-key")
+	secretKey, _ := cmd.Flags().GetString("secret-key")
 
 	fmt.Println("Running generateFiles...")
 
-	minioClient, err := minio.New("localhost:8888", &minio.Options{
-		Creds:  credentials.NewStaticV4("minioconsole", "minioconsole123", ""),
+	minioClient, err := minio.New(host, &minio.Options{
+		Creds:  credentials.NewStaticV4(accessKey, secretKey, ""),
 		Secure: false,
 	})
 
@@ -70,6 +76,7 @@ func generateFiles(cmd *cobra.Command, args []string) {
 
 	ctx := context.Background()
 
+	// Generate object names
 	objectNames := make([]string, 0, numFiles)
 	for i := 0; i < numFiles; i++ {
 		objectNames = append(objectNames, fmt.Sprintf("%s/notify_%s.json", prefix, uuid.New().String()))
@@ -85,12 +92,14 @@ func generateFiles(cmd *cobra.Command, args []string) {
 	}
 
 	// Sending jobs to worker pool
-	for _, objectName := range objectNames {
-		jobs <- Job{ObjectName: objectName, BucketName: bucketName}
-		wg.Add(1)
-	}
-	close(jobs)
-	wg.Wait()
+	go func() {
+		for _, objectName := range objectNames {
+			jobs <- Job{ObjectName: objectName, BucketName: bucketName}
+			wg.Add(1)
+		}
+		close(jobs)
+		wg.Wait()
+	}()
 
 	// Collecting results
 	for i := 0; i < len(objectNames); i++ {

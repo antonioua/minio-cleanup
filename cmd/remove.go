@@ -12,49 +12,48 @@ import (
 	"time"
 )
 
-var cleanFilesCmd = &cobra.Command{
-	Use:   "clean",
-	Short: "Clean up files in specific bucket",
+var removeFilesCmd = &cobra.Command{
+	Use:   "remove",
+	Short: "Remove up files in specific bucket",
 	Long: `A longer description that spans multiple lines and likely contains
 For example:
 
-./minioCleanupBuckets clean -b smp-to-oss-sandbox -n 100 -t 1`,
+./minio_cleanup remove -b smp-to-oss-sandbox --older-than 10s --prefix inbox --suffix .json --host localhost:8888 --access-key <access_key> --secret-key <secret_key>`,
 
-	//Run: func(cmd *cobra.Command, args []string) {
-	//	if len(args) < 2 {
-	//		cmd.Help()
-	//		os.Exit(0)
-	//	}
-	//	cleanupFiles(cmd, args)
-	//},
-	Run: cleanupFiles,
+	Run: removeFiles,
 }
 
 func init() {
-	rootCmd.AddCommand(cleanFilesCmd)
-	cleanFilesCmd.Flags().StringP("older-than", "o", "", "Filter files older than duration (e.g., '5d', '1h', '30m', '45s', '2d3h4m')")
-	cleanFilesCmd.Flags().StringP("prefix", "p", "", "Filter files with specific prefix (e.g., 'inbox')")
-	cleanFilesCmd.Flags().StringP("suffix", "s", "", "Filter files with specific suffix (e.g., '.json')")
-	cleanFilesCmd.Flags().StringP("bucket", "b", "", "Bucket name")
-	//cleanFilesCmd.Flags().IntP("threads", "t", 1, "Number of threads")
+	rootCmd.AddCommand(removeFilesCmd)
+	removeFilesCmd.Flags().StringP("older-than", "o", "", "Filter files older than duration (e.g., '5d', '1h', '30m', '45s', '2d3h4m')")
+	removeFilesCmd.Flags().StringP("prefix", "p", "", "Filter files with specific prefix (e.g., 'inbox')")
+	removeFilesCmd.Flags().StringP("suffix", "s", "", "Filter files with specific suffix (e.g., '.json')")
+	removeFilesCmd.Flags().StringP("bucket", "b", "", "Bucket name")
+	removeFilesCmd.Flags().IntP("workers", "w", 1, "Number of workers, a.k.a. number of concurrent requests")
+	removeFilesCmd.Flags().StringP("host", "", "localhost:8888", "Minio host:port")
+	removeFilesCmd.Flags().StringP("access-key", "", "", "Minio access key")
+	removeFilesCmd.Flags().StringP("secret-key", "", "", "Minio secret key")
 }
 
-func cleanupFiles(cmd *cobra.Command, args []string) {
+func removeFiles(cmd *cobra.Command, args []string) {
 	olderThanStr, _ := cmd.Flags().GetString("older-than")
 	prefix, _ := cmd.Flags().GetString("prefix")
 	suffix, _ := cmd.Flags().GetString("suffix")
 	bucketName, _ := cmd.Flags().GetString("bucket")
-	//numThreads, _ := cmd.Flags().GetInt("threads")
+	//numWorkers, _ := cmd.Flags().GetInt("workers")
+	host, _ := cmd.Flags().GetString("host")
+	accessKey, _ := cmd.Flags().GetString("access-key")
+	secretKey, _ := cmd.Flags().GetString("secret-key")
 
 	olderThanDuration, err := longduration.ParseDuration(olderThanStr)
 	if err != nil {
 		log.Fatalf("Invalid older-than duration format: %v", err)
 	}
 
-	fmt.Println("Running cleanupFiles...")
+	fmt.Println("Running removeFiles...")
 
-	minioClient, err := minio.New("localhost:8888", &minio.Options{
-		Creds:  credentials.NewStaticV4("minioconsole", "minioconsole123", ""),
+	minioClient, err := minio.New(host, &minio.Options{
+		Creds:  credentials.NewStaticV4(accessKey, secretKey, ""),
 		Secure: false,
 	})
 
@@ -65,7 +64,6 @@ func cleanupFiles(cmd *cobra.Command, args []string) {
 	ctx := context.Background()
 
 	numOfObjects := 0
-
 	currentTIme := time.Now()
 	olderThanTime := currentTIme.Add(-olderThanDuration)
 
@@ -92,6 +90,4 @@ func cleanupFiles(cmd *cobra.Command, args []string) {
 
 	fmt.Println("\nDone.")
 	fmt.Println("Total number of removed objects: ", numOfObjects)
-
-	//minioClient.RemoveObjects
 }
