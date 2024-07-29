@@ -16,9 +16,12 @@ go build -o minio_cleanup
 ## Usage
 ```bash
 ./minio_cleanup --help
-./minio_cleanup remove -b smp-to-oss-sandbox --older-than 10s --prefix inbox --suffix .json --host localhost:8888 --access-key <access_key> --secret-key <secret_key>
+./minio_cleanup remove --bucket smp-to-oss-sandbox --older-than 10s --prefix inbox --suffix .json --workers 20 --host localhost:8888 --access-key <access_key> --secret-key <secret_key>`
 ```
 
 ## TODO
-- Check if flags was set.
-- Define required flags.
+- [x] Check if flags was set.
+- [x] Define required flags.
+- [ ] Remove printing removal of each file and generating to speed up the application
+- [ ] Remove hardcoded size of results channel for removing
+- [ ] Pront example if cmd was chosen but flags bot set

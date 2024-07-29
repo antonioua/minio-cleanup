@@ -32,6 +32,12 @@ func init() {
 	generateCmd.Flags().StringP("host", "", "localhost:8888", "Minio host:port")
 	generateCmd.Flags().StringP("access-key", "", "", "Minio access key")
 	generateCmd.Flags().StringP("secret-key", "", "", "Minio secret key")
+
+	generateCmd.MarkFlagRequired("bucket")
+	generateCmd.MarkFlagRequired("prefix")
+	generateCmd.MarkFlagRequired("files-number")
+	generateCmd.MarkFlagRequired("access-key")
+	generateCmd.MarkFlagRequired("secret-key")
 }
 
 type Job struct {
@@ -90,7 +96,7 @@ func generateFiles(cmd *cobra.Command, args []string) {
 	// Start workers
 	for w := 1; w <= numWorkers; w++ {
 		go uploaderWorker(w, minioClient, ctx, jobs, results, &wg)
-		fmt.Println("Worker ", w, " started.")
+		//fmt.Println("Worker ", w, " started.")
 	}
 
 	// Sending jobs to worker pool
