@@ -16,6 +16,7 @@ go build -o minio_cleanup
 ## Usage
 ```bash
 ./minio_cleanup --help
+./minio_cleanup remove -b smp-to-oss-sandbox --older-than 10s --prefix inbox --suffix .json --host localhost:8888 --access-key <access_key> --secret-key <secret_key>
 ```
 
 ## TODO

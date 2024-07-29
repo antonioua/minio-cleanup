@@ -39,7 +39,7 @@ type Job struct {
 	ObjectName string
 }
 
-func worker(id int, minioClient *minio.Client, ctx context.Context, jobs <-chan Job, results chan<- string, wg *sync.WaitGroup) {
+func uploaderWorker(id int, minioClient *minio.Client, ctx context.Context, jobs <-chan Job, results chan<- string, wg *sync.WaitGroup) {
 	content := []byte("Hello world!")
 
 	for job := range jobs {
@@ -84,20 +84,22 @@ func generateFiles(cmd *cobra.Command, args []string) {
 
 	jobs := make(chan Job, len(objectNames))
 	results := make(chan string, len(objectNames))
+	defer close(results)
 	wg := sync.WaitGroup{}
 
 	// Start workers
-	for w := 0; w < numWorkers; w++ {
-		go worker(w, minioClient, ctx, jobs, results, &wg)
+	for w := 1; w <= numWorkers; w++ {
+		go uploaderWorker(w, minioClient, ctx, jobs, results, &wg)
+		fmt.Println("Worker ", w, " started.")
 	}
 
 	// Sending jobs to worker pool
 	go func() {
+		defer close(jobs)
 		for _, objectName := range objectNames {
 			jobs <- Job{ObjectName: objectName, BucketName: bucketName}
 			wg.Add(1)
 		}
-		close(jobs)
 		wg.Wait()
 	}()
 
