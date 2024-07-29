@@ -25,3 +25,4 @@ go build -o minio_cleanup
 - [ ] Remove printing removal of each file and generating to speed up the application
 - [ ] Remove hardcoded size of results channel for removing
 - [ ] Pront example if cmd was chosen but flags bot set
+- [ ] Fix number of "Removed objects:", now it shows doubled
