@@ -137,9 +137,11 @@ func removeFiles(cmd *cobra.Command, args []string) {
 			if ok {
 				numOfRemovedObjects++
 				fmt.Println("Successfully removed: ", result)
-				fmt.Println("Removed objects:", numOfRemovedObjects)
+				//fmt.Println("Removed objects:", numOfRemovedObjects)
 			} else {
 				fmt.Println("No more results to process.")
+				fmt.Println("\nDone.")
+				fmt.Println("Took time: ", time.Since(currentTIme))
 				return
 			}
 		case <-ctx.Done():
@@ -147,7 +149,4 @@ func removeFiles(cmd *cobra.Command, args []string) {
 			return
 		}
 	}
-
-	fmt.Println("\nDone.")
-	fmt.Println("Took time: ", time.Since(currentTIme))
 }

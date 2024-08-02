@@ -10,6 +10,7 @@ import (
 	"github.com/spf13/cobra"
 	"log"
 	"sync"
+	"time"
 )
 
 var generateCmd = &cobra.Command{
@@ -71,6 +72,8 @@ func generateFiles(cmd *cobra.Command, args []string) {
 
 	fmt.Println("Running generateFiles...")
 
+	currentTIme := time.Now()
+
 	minioClient, err := minio.New(host, &minio.Options{
 		Creds:  credentials.NewStaticV4(accessKey, secretKey, ""),
 		Secure: false,
@@ -111,8 +114,10 @@ func generateFiles(cmd *cobra.Command, args []string) {
 
 	// Collecting results
 	for i := 0; i < len(objectNames); i++ {
+		//<-results
 		fmt.Println("Successfully uploaded: ", <-results)
 	}
 
 	fmt.Println("\nDone.")
+	fmt.Println("Took time: ", time.Since(currentTIme))
 }
