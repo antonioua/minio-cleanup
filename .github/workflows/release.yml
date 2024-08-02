@@ -24,7 +24,7 @@ jobs:
         args: release --clean
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        GOOS: darwin,linux,windows
+        GOOS: darwin,windows
         GOARCH: amd64,arm64,386
 
 
