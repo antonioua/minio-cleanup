@@ -22,7 +22,7 @@ go build -o minio_cleanup
 ## TODO
 - [x] Check if flags was set.
 - [x] Define required flags.
-- [ ] Remove printing removal of each file and generating to speed up the application
-- [ ] Remove hardcoded size of results channel for removing
-- [ ] Pront example if cmd was chosen but flags bot set
-- [ ] Fix number of "Removed objects:", now it shows doubled
+- [ ] Remove printing removal of each file and generating to speed up the application.
+- [ ] Remove hardcoded size of results channel for removing.
+- [ ] Print example if cmd was chosen but flags bot set.
+- [ ] Fix number of "Removed objects", now it's shows as doubled.

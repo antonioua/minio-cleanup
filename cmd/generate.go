@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"github.com/google/uuid"
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
 	"github.com/spf13/cobra"
@@ -88,7 +87,7 @@ func generateFiles(cmd *cobra.Command, args []string) {
 	// Generate object names
 	objectNames := make([]string, 0, numFiles)
 	for i := 0; i < numFiles; i++ {
-		objectNames = append(objectNames, fmt.Sprintf("%s/notify_%s.json", prefix, uuid.New().String()))
+		objectNames = append(objectNames, fmt.Sprintf("%s/notify_%s.json", prefix, time.Now().UnixNano()))
 	}
 
 	jobs := make(chan Job, len(objectNames))
