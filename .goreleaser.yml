@@ -1,0 +1,10 @@
+builds:
+- id: minio_cleanup
+  main: main.go
+  goos:
+  - linux
+  goarch:
+  - 386
+  ldflags: -s -w
+  env:
+  - CGO_ENABLED=0
