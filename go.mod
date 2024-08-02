@@ -1,6 +1,6 @@
 module github.com/antonioua/minio-cleanup
 
-go 1.22.5
+go 1.22
 
 require (
 	github.com/dustin/go-humanize v1.0.1 // indirect
