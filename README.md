@@ -22,6 +22,7 @@ go build -o minio_cleanup
 ## TODO
 - [x] Check if flags was set.
 - [x] Define required flags.
+- [ ] Fix GoReleaser Github Action.
 - [ ] Remove printing removal of each file and generating to speed up the application.
 - [ ] Remove hardcoded size of results channel for removing.
 - [ ] Print example if cmd was chosen but flags bot set.
