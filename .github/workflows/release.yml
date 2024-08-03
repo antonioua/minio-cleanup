@@ -33,8 +33,7 @@ jobs:
     - name: Run GoReleaser
       uses: goreleaser/goreleaser-action@v6
       with:
-        distribution: goreleaser
-        version: ${{ github.ref_name }}
+        version: latest
         args: release --clean
         workdir: ./
       env:
