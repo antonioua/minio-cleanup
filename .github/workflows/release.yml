@@ -19,6 +19,7 @@ jobs:
     - name: Run GoReleaser
       uses: goreleaser/goreleaser-action@v4
       with:
+        version: 1.8.3
         args: release --clean
       env:
         GITHUB_TOKEN: ${{ github.token }}
