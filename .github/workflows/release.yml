@@ -5,12 +5,13 @@ on:
     tags:
     - '*.*.*'
 
-permissions:
-  contents: write
 
 jobs:
   release:
     runs-on: ubuntu-latest
+    # Write permissions is required for Go Releaser
+    permissions:
+      contents: write
 
     steps:
     - name: Check out the repository
