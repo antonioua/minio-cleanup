@@ -1,6 +1,6 @@
 # minio-cleanup
 
-Common CLI to help you cleanup files using filtering in Minio bucket
+Common CLI to help you cleanup files in bucket and using filtering for file names.
 
 ## Development
 ```bash
