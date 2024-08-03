@@ -36,12 +36,18 @@ func init() {
 	removeFilesCmd.Flags().StringP("secret-key", "", "", "Minio secret key")
 	removeFilesCmd.Flags().StringP("timeout", "", "10m", "Timeout duration (e.g., '5m', '10s', '1h')")
 
-	removeFilesCmd.MarkFlagRequired("older-than")
-	removeFilesCmd.MarkFlagRequired("prefix")
-	removeFilesCmd.MarkFlagRequired("suffix")
-	removeFilesCmd.MarkFlagRequired("bucket")
-	removeFilesCmd.MarkFlagRequired("access-key")
-	removeFilesCmd.MarkFlagRequired("secret-key")
+	if err := removeFilesCmd.MarkFlagRequired("bucket"); err != nil {
+		log.Fatal(err)
+	}
+	if err := removeFilesCmd.MarkFlagRequired("prefix"); err != nil {
+		log.Fatal(err)
+	}
+	if err := removeFilesCmd.MarkFlagRequired("access-key"); err != nil {
+		log.Fatal(err)
+	}
+	if err := removeFilesCmd.MarkFlagRequired("secret-key"); err != nil {
+		log.Fatal(err)
+	}
 }
 
 func removalWorker(id int, minioClient *minio.Client, ctx context.Context, jobs <-chan Job, results chan<- string, wg *sync.WaitGroup) {

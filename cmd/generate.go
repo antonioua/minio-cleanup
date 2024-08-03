@@ -34,11 +34,21 @@ func init() {
 	generateCmd.Flags().StringP("access-key", "", "", "Minio access key")
 	generateCmd.Flags().StringP("secret-key", "", "", "Minio secret key")
 
-	generateCmd.MarkFlagRequired("bucket")
-	generateCmd.MarkFlagRequired("prefix")
-	generateCmd.MarkFlagRequired("files-number")
-	generateCmd.MarkFlagRequired("access-key")
-	generateCmd.MarkFlagRequired("secret-key")
+	if err := generateCmd.MarkFlagRequired("bucket"); err != nil {
+		log.Fatal(err)
+	}
+	if err := generateCmd.MarkFlagRequired("prefix"); err != nil {
+		log.Fatal(err)
+	}
+	if err := generateCmd.MarkFlagRequired("files-number"); err != nil {
+		log.Fatal(err)
+	}
+	if err := generateCmd.MarkFlagRequired("access-key"); err != nil {
+		log.Fatal(err)
+	}
+	if err := generateCmd.MarkFlagRequired("secret-key"); err != nil {
+		log.Fatal(err)
+	}
 }
 
 type Job struct {

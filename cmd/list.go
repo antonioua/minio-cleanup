@@ -33,12 +33,18 @@ func init() {
 	listFilesCmd.Flags().StringP("access-key", "", "", "Minio access key")
 	listFilesCmd.Flags().StringP("secret-key", "", "", "Minio secret key")
 
-	listFilesCmd.MarkFlagRequired("older-than")
-	listFilesCmd.MarkFlagRequired("prefix")
-	listFilesCmd.MarkFlagRequired("suffix")
-	listFilesCmd.MarkFlagRequired("bucket")
-	listFilesCmd.MarkFlagRequired("access-key")
-	listFilesCmd.MarkFlagRequired("secret-key")
+	if err := listFilesCmd.MarkFlagRequired("bucket"); err != nil {
+		log.Fatal(err)
+	}
+	if err := listFilesCmd.MarkFlagRequired("prefix"); err != nil {
+		log.Fatal(err)
+	}
+	if err := listFilesCmd.MarkFlagRequired("access-key"); err != nil {
+		log.Fatal(err)
+	}
+	if err := listFilesCmd.MarkFlagRequired("secret-key"); err != nil {
+		log.Fatal(err)
+	}
 }
 
 func listFiles(cmd *cobra.Command, args []string) {
