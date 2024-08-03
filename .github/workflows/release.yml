@@ -28,7 +28,7 @@ jobs:
       with:
         context: .
         push: true
-        tags: ${{ secrets.DOCKERHUB_USERNAME }}/minio-cleanup:${{ github.ref }},${{ secrets.DOCKERHUB_USERNAME }}/minio-cleanup:latest
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/minio-cleanup:latest,${{ secrets.DOCKERHUB_USERNAME }}/minio-cleanup:${{ github.ref }}
 
     - name: Run GoReleaser
       uses: goreleaser/goreleaser-action@v6
