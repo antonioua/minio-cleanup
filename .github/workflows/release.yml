@@ -17,17 +17,6 @@ jobs:
     - name: Check out the repository
       uses: actions/checkout@v4
 
-    - name: Set up Go
-      uses: actions/setup-go@v5
-
-    - name: Run GoReleaser
-      uses: goreleaser/goreleaser-action@v6
-      with:
-        version: latest
-        args: release
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
-
     - name: Log in to Docker Hub
       uses: docker/login-action@v3
       with:
@@ -39,14 +28,12 @@ jobs:
       with:
         context: .
         push: true
-        tags: ${{ secrets.DOCKERHUB_USERNAME }}/minio_cleanup:latest
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/minio-cleanup:${{ github.ref }},${{ secrets.DOCKERHUB_USERNAME }}/minio-cleanup:latest
 
-    - name: Create GitHub Release
-      uses: actions/create-release@v1
+    - name: Run GoReleaser
+      uses: goreleaser/goreleaser-action@v6
+      with:
+        version: latest
+        args: release
       env:
         GITHUB_TOKEN: ${{ github.token }}
-      with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
-        draft: false
-        prerelease: false
