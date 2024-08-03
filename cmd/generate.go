@@ -8,6 +8,7 @@ import (
 	"github.com/minio/minio-go/v7/pkg/credentials"
 	"github.com/spf13/cobra"
 	"log"
+	"strconv"
 	"sync"
 	"time"
 )
@@ -87,7 +88,7 @@ func generateFiles(cmd *cobra.Command, args []string) {
 	// Generate object names
 	objectNames := make([]string, 0, numFiles)
 	for i := 0; i < numFiles; i++ {
-		objectNames = append(objectNames, fmt.Sprintf("%s/notify_%s.json", prefix, time.Now().UnixNano()))
+		objectNames = append(objectNames, fmt.Sprintf("%s/notify_%s.json", prefix, strconv.FormatInt(time.Now().UnixNano(), 10)))
 	}
 
 	jobs := make(chan Job, len(objectNames))
