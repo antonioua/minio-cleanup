@@ -33,7 +33,9 @@ jobs:
     - name: Run GoReleaser
       uses: goreleaser/goreleaser-action@v6
       with:
-        version: latest
-        args: release
+        distribution: goreleaser
+        version: ${{ github.ref_name }}
+        args: release --clean
+        workdir: ./
       env:
         GITHUB_TOKEN: ${{ github.token }}
