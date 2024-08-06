@@ -24,6 +24,7 @@ go build -o minio_cleanup
 ## TODO
 - [x] Check if flags was set.
 - [x] Define required flags.
+- [ ] Fix binary name in release to be minio_cleanup and not minio-cleanup. Also check help to match it.
 - [ ] Move all commands from readme to Makefile.
 - [ ] Fix GoReleaser Github Action.
 - [ ] Remove printing removal of each file and generating to speed up the application.
