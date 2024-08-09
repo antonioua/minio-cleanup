@@ -19,7 +19,9 @@ var generateCmd = &cobra.Command{
 	Long: `A longer description that spans multiple lines and likely contains
 For example:
 
-./minio_cleanup generate --bucket smp-to-oss-sandbox --prefix inbox --files-number 1000 --workers 20 --host localhost:8888 --access-key <access_key> --secret-key <secret_key>`,
+./minio_cleanup generate --bucket smp-to-oss-sandbox --prefix inbox --files-number 1000 --workers 20 --host localhost:8888 --access-key <access_key> --secret-key <secret_key>
+
+Note: for Windows use minio_cleanup.exe`,
 
 	Run: generateFiles,
 }

@@ -18,7 +18,9 @@ var listFilesCmd = &cobra.Command{
 	Long: `A longer description that spans multiple lines and likely contains
 For example:
 
-./minio_cleanup list --bucket smp-to-oss-sandbox --older-than 10s --prefix inbox --suffix .json --host localhost:8888 --access-key <access_key> --secret-key <secret_key>`,
+./minio_cleanup list --bucket smp-to-oss-sandbox --older-than 10s --prefix inbox --suffix .json --host localhost:8888 --access-key <access_key> --secret-key <secret_key>
+
+Note: for Windows use minio_cleanup.exe`,
 
 	Run: listFiles,
 }
