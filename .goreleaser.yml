@@ -3,8 +3,8 @@ before:
   hooks:
   - go mod tidy
 
-#env:
-#- PACKAGE_PATH=github.com/antonioua/minio-cleanup/cmd
+env:
+- PACKAGE_PATH=github.com/antonioua/minio-cleanup/cmd
 
 builds:
 - id: minio_cleanup
