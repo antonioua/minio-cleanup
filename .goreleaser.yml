@@ -3,8 +3,8 @@ before:
   hooks:
   - go mod tidy
 
-env:
-- PACKAGE_PATH=github.com/antonioua/minio-cleanup/cmd
+#env:
+#- PACKAGE_PATH=github.com/antonioua/minio-cleanup/cmd
 
 builds:
 - id: minio_cleanup
@@ -20,6 +20,7 @@ builds:
   - CGO_ENABLED=0
   ldflags:
   - -s -w -X {{.Env.PACKAGE_PATH}}={{.Version}}
+  binary: minio_cleanup
 release:
   prerelease: auto
 
