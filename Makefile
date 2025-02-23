@@ -5,15 +5,11 @@ all: build
 
 build:
 	@echo "Building..."
-	
-	
-	@go build -o main cmd/api/main.go
+	@go build -o minio-cleanup
 
 # Run the application
 run:
 	@go run cmd/api/main.go
-
-
 
 # Test the application
 test:
