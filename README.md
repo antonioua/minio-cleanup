@@ -13,8 +13,6 @@ docker run --rm xdesigns/minio-cleanup:latest --help
 docker run --rm xdesigns/minio-cleanup:latest remove --bucket smp-to-oss-sandbox --older-than 10s --prefix inbox --suffix .json --workers 20 --host localhost:8888 --access-key <access_key> --secret-key <secret_key>
 ```
 
-[Container images.](https://hub.docker.com/r/xdesigns/minio-cleanup/tags)
-
 ## Development
 
 Build and run
