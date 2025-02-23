@@ -6,7 +6,17 @@ This Command Line Interface (CLI) tool assists in cleaning up files in a MinIO b
 
 • File Name Filtering: Utilize filters to specify which files to target for cleanup, ensuring precise control over the operation.
 
+## Usage
+
+```bash
+docker run --rm xdesigns/minio-cleanup:latest --help
+docker run --rm xdesigns/minio-cleanup:latest remove --bucket smp-to-oss-sandbox --older-than 10s --prefix inbox --suffix .json --workers 20 --host localhost:8888 --access-key <access_key> --secret-key <secret_key>
+```
+
+[Container images.](https://hub.docker.com/r/xdesigns/minio-cleanup/tags)
+
 ## Development
+
 ```bash
 kubectl port-forward svc/minio -n anton-test 8888:80
 kubectl get secret -n minio-operator console-sa-secret -o json | jq '.data.token' -r | base64 -d
@@ -15,15 +25,9 @@ kubectl port-forward svc/console -n minio-operator 9090:9090
 
 ```bash
 go build -o minio_cleanup
-```
-
-## Usage
-```bash
 ./minio_cleanup --help
 ./minio_cleanup remove --bucket smp-to-oss-sandbox --older-than 10s --prefix inbox --suffix .json --workers 20 --host localhost:8888 --access-key <access_key> --secret-key <secret_key>`
 ```
-
-[Container images.](https://hub.docker.com/r/xdesigns/minio-cleanup/tags)
 
 ## TODO
 - [x] Check if flags was set.
