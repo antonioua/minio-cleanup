@@ -4,30 +4,28 @@ FROM golang:1.22.5 as builder
 # Set the working directory inside the container
 WORKDIR /app
 
-# Copy go.mod and go.sum files
+# Copy the Go modules and the source files
 COPY go.mod go.sum ./
+COPY main.go main.go
+COPY cmd/ cmd/
 
 # Download dependencies
 RUN go mod download
 
-# Copy the rest of the application code
-COPY . .
+# Build the Go application for the target platform
+RUN CGO_ENABLED=0 GO111MODULE=on \
+    go build \
+    -a \
+    -o /minio_cleanup
 
-# Build the Go application
-RUN go build -o minio_cleanup ./cmd
+RUN chmod +x /minio_cleanup
 
-# Stage 2: Create a small image with the built binary
+# Stage 2: Create the final image
 FROM alpine:latest
 
-# Set the working directory inside the container
-WORKDIR /root/
+WORKDIR /
 
-# Copy the binary from the builder stage
-COPY --from=builder /app/minio_cleanup .
-RUN chmod +x minio_cleanup
+COPY --from=builder /minio_cleanup /minio_cleanup
 
-# Expose the port the app runs on (if applicable)
-# EXPOSE 8080
-
-# Command to run the application
-ENTRYPOINT ["./minio_cleanup"]
+ENTRYPOINT ["/minio_cleanup"]
+CMD ["-h"]
