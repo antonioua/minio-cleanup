@@ -13,8 +13,8 @@ RUN go mod download
 # Copy the rest of the application code
 COPY . .
 
-# Build the Go application
-RUN go build -o minio_cleanup ./cmd
+# Build the Go application for the target platform
+RUN GOOS=linux GOARCH=${TARGETARCH} go build -o minio_cleanup ./cmd
 
 # Stage 2: Create a small image with the built binary
 FROM alpine:latest
@@ -25,9 +25,6 @@ WORKDIR /root/
 # Copy the binary from the builder stage
 COPY --from=builder /app/minio_cleanup .
 RUN chmod +x minio_cleanup
-
-# Expose the port the app runs on (if applicable)
-# EXPOSE 8080
 
 # Command to run the application
 ENTRYPOINT ["./minio_cleanup"]
