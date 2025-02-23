@@ -1,6 +1,8 @@
 # minio-cleanup
 
-Common CLI to help you cleanup files in bucket and using filtering for file names.
+This Command Line Interface (CLI) tool assists in cleaning up files in a bucket efficiently. Here are its main features:
+• Multi-threaded Processing: Perform file cleanup operations concurrently to save time and increase efficiency.
+• File Name Filtering: Utilize filters to specify which files to target for cleanup, ensuring precise control over the operation.
 
 ## Development
 ```bash
