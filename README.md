@@ -8,6 +8,8 @@ This Command Line Interface (CLI) tool assists in cleaning up files in a MinIO b
 
 ## Usage
 
+Download binary from the [releases](https://github.com/antonioua/minio-cleanup/releases) page or run it using Docker.
+
 ```bash
 docker run --rm xdesigns/minio-cleanup:latest --help
 docker run --rm xdesigns/minio-cleanup:latest remove --bucket smp-to-oss-sandbox --older-than 10s --prefix inbox --suffix .json --workers 20 --host localhost:8888 --access-key <access_key> --secret-key <secret_key>
