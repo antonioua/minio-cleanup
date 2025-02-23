@@ -24,6 +24,7 @@ WORKDIR /root/
 
 # Copy the binary from the builder stage
 COPY --from=builder /app/minio_cleanup .
+RUN chmod +x minio_cleanup
 
 # Expose the port the app runs on (if applicable)
 # EXPOSE 8080
