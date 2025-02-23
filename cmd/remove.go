@@ -141,10 +141,11 @@ func removeFiles(cmd *cobra.Command, args []string) {
 
 	for {
 		select {
-		case result, ok := <-results:
+		//case result, ok := <-results:
+		case _, ok := <-results:
 			if ok {
 				numOfRemovedObjects++
-				fmt.Println("Successfully removed: ", result)
+				//fmt.Println("Successfully removed: ", result)
 				//fmt.Println("Removed objects:", numOfRemovedObjects)
 			} else {
 				fmt.Println("No more results to process.")

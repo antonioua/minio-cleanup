@@ -5,7 +5,7 @@ all: build
 
 build:
 	@echo "Building..."
-	@go build -o minio-cleanup
+	@go build -o minio_cleanup
 
 # Run the application
 run:

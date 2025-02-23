@@ -8,10 +8,9 @@ This Command Line Interface (CLI) tool assists in cleaning up files in a MinIO b
 
 ## Usage
 
-Download binary from the [releases](https://github.com/antonioua/minio-cleanup/releases) page or run it using Docker.
+Download binary from the [releases](https://github.com/antonioua/minio-cleanup/releases) page, build and run locally or run it using Docker.
 
 ```bash
-docker run --rm xdesigns/minio-cleanup:latest --help
 docker run --rm xdesigns/minio-cleanup:latest remove --bucket smp-to-oss-sandbox --older-than 10s --prefix inbox --suffix .json --workers 20 --host localhost:8888 --access-key <access_key> --secret-key <secret_key>
 ```
 
@@ -28,7 +27,7 @@ go build -o minio_cleanup
 Expose MinIO and Console
 
 ```bash
-kubectl port-forward svc/minio -n anton-test 8888:80
+kubectl port-forward svc/minio -n <namespace> 8888:80
 kubectl get secret -n minio-operator console-sa-secret -o json | jq '.data.token' -r | base64 -d
 kubectl port-forward svc/console -n minio-operator 9090:9090
 ```
