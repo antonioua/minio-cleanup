@@ -8,24 +8,66 @@ This Command Line Interface (CLI) tool assists in cleaning up files in a MinIO b
 
 ## Usage
 
-Download binary from the [releases](https://github.com/antonioua/minio-cleanup/releases) page, build and run locally or run it using Docker.
+Run as docker container.
 
 ```bash
 docker run --rm xdesigns/minio-cleanup:latest --help
-docker run --rm xdesigns/minio-cleanup:latest remove --timeout 10h --bucket smp-to-oss-sandbox --older-than 10s --prefix inbox --suffix .json --workers 10 --host localhost:8888 --access-key <access_key> --secret-key <secret_key>
+docker run --rm xdesigns/minio-cleanup:latest remove --timeout 10h --bucket <bucket_name> --older-than 2h --prefix / --suffix .json --workers 10 --host localhost:8888 --access-key <access_key> --secret-key <secret_key>
 ```
 
-## Development
+Run as k8s job.
 
-Build and run
+```bash
+cat <<EOF | kubectl apply -n <namespace> -f -
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: manual-minio-cleanup-job
+spec:
+  template:
+    spec:
+      containers:
+      - name: minio-cleanup
+        image: xdesigns/minio-cleanup:latest
+        command: ["/minio_cleanup", "remove"]
+        args:
+          - "--bucket"
+          - "<bucket_name>"
+          - "--older-than"
+          - "2h"
+          - "--prefix"
+          - "/"
+          - "--suffix"
+          - ".json"
+          - "--workers"
+          - "10"
+          - "--host"
+          - "minio.<namespace>.svc.cluster.local:80"
+          - "--access-key"
+          - "<minio_user>"
+          - "--secret-key"
+          - "<minio_pwd"
+          - "--timeout"
+          - "10h"
+      restartPolicy: Never
+  backoffLimit: 4
+EOF
+
+kubectl -n <namespace> logs job/manual-minio-cleanup-job -f
+
+kubectl -n <namespace> delete job/manual-minio-cleanup-job
+```
+
+Compile and run.
 
 ```bash
 go build -o minio_cleanup
 ./minio_cleanup --help
-./minio_cleanup remove --timeout 10h --bucket smp-to-oss-sandbox --older-than 10s --prefix inbox --suffix .json --workers 10 --host localhost:8888 --access-key <access_key> --secret-key <secret_key>
 ```
 
-Expose MinIO and Console
+Download binary from the [releases](https://github.com/antonioua/minio-cleanup/releases) page and run.
+
+## Expose MinIO and Console
 
 ```bash
 kubectl port-forward svc/minio -n <namespace> 8888:80
