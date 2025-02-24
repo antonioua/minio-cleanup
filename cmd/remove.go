@@ -101,8 +101,8 @@ func removeFiles(cmd *cobra.Command, args []string) {
 	defer cancel()
 
 	numOfObjects := 0
-	currentTIme := time.Now()
-	olderThanTime := currentTIme.Add(-olderThanDuration)
+	currentTime := time.Now()
+	olderThanTime := currentTime.Add(-olderThanDuration)
 
 	jobs := make(chan Job, 10000)
 	results := make(chan string, 10000)
@@ -150,7 +150,7 @@ func removeFiles(cmd *cobra.Command, args []string) {
 			} else {
 				fmt.Println("No more results to process.")
 				fmt.Println("\nDone.")
-				fmt.Println("Took time: ", time.Since(currentTIme))
+				fmt.Println("Took time: ", time.Since(currentTime))
 				return
 			}
 		case <-ctx.Done():

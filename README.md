@@ -11,7 +11,8 @@ This Command Line Interface (CLI) tool assists in cleaning up files in a MinIO b
 Download binary from the [releases](https://github.com/antonioua/minio-cleanup/releases) page, build and run locally or run it using Docker.
 
 ```bash
-docker run --rm xdesigns/minio-cleanup:latest remove --bucket smp-to-oss-sandbox --older-than 10s --prefix inbox --suffix .json --workers 20 --host localhost:8888 --access-key <access_key> --secret-key <secret_key>
+docker run --rm xdesigns/minio-cleanup:latest --help
+docker run --rm xdesigns/minio-cleanup:latest remove --timeout 10h --bucket smp-to-oss-sandbox --older-than 10s --prefix inbox --suffix .json --workers 10 --host localhost:8888 --access-key <access_key> --secret-key <secret_key>
 ```
 
 ## Development
@@ -21,7 +22,7 @@ Build and run
 ```bash
 go build -o minio_cleanup
 ./minio_cleanup --help
-./minio_cleanup remove --bucket smp-to-oss-sandbox --older-than 10s --prefix inbox --suffix .json --workers 20 --host localhost:8888 --access-key <access_key> --secret-key <secret_key>`
+./minio_cleanup remove --timeout 10h --bucket smp-to-oss-sandbox --older-than 10s --prefix inbox --suffix .json --workers 10 --host localhost:8888 --access-key <access_key> --secret-key <secret_key>
 ```
 
 Expose MinIO and Console
